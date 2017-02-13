@@ -13,5 +13,6 @@
 Route::get('/', function(){
     return view('welcome');
 });
-Route::get('/report', 'ReportsController@index');
-Route::get('/report/monitors', 'ReportsController@monitors');
+Route::get('/report', 'ReportsController@allComputers');
+Route::get('/report/printers', 'ReportsController@allPrinters');
+Route::get('/report/monitors', 'ReportsController@allMonitors');

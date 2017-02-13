@@ -7,12 +7,21 @@ use App\Hardwares;
 
 class ReportsController extends Controller
 {
-    public function index()
+    public function allComputers()
     {
         $objects = Hardwares::with('storages','monitors','accountinfo')->get();
        
         //dd($objects->accountinfo);
-        return view('reports.default', ['objects'=> $objects]);
+        return view('reports.allComputers', ['objects'=> $objects]);
+        //return view('reports.default', compact($objects));
+    }
+    
+    public function allPrinters()
+    {
+        $objects = Hardwares::with('storages','monitors','accountinfo')->get();
+       
+        //dd($objects->accountinfo);
+        return view('reports.allComputers', ['objects'=> $objects]);
         //return view('reports.default', compact($objects));
     }
 }
