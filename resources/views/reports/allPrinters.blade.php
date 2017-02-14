@@ -14,11 +14,8 @@
                 <th class="filter-select filter-exact" data-placeholder="Выбрать группу">Подразделение</th>
                 <th>Пользователь/проф.</th>
                 <th>Компьютер</th>
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">ОС</th>
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">CPU</th> 
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">RAM</th> 
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">HDD</th> 
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">Мониторы</th>
+                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">Имя принтера</th>
+                <th>Порт</th>
             </tr> 
         </thead> 
        <tbody> 
@@ -27,28 +24,25 @@
             <tr>    
                 <!--<td><?= $i++; ?></td>-->
                 <td scope="row">{{$obj->ID}}</td> 
-                <td>{{$obj->accountinfo['fields_9']}}</td>
-                <td>{{$obj->LASTDATE}}</td>
-                <td>{{$obj->accountinfo['TAG']}}</td>
-                <td>{{$obj->accountinfo['fields_5']}}<p><small class="text-lowercase text-muted">{{$obj->accountinfo['fields_6']}}</small></p></td>
+                <td>{{$obj->accountinfo['fields_10']}}</td> <!-- дата ввода -->
+                <td>{{$obj->LASTDATE}}</td> <!-- дата опроса -->
+                <td>{{$obj->accountinfo['TAG']}}</td> <!-- подразделение -->
+                <td>{{$obj->accountinfo['fields_5']}}<p><small class="text-lowercase text-muted">{{$obj->accountinfo['fields_6']}}</small></p></td> <!-- пользователь -->
                 <td>
-                    <p>{{$obj->NAME}}</p>
+                    <p>{{$obj->NAME}}</p> <!-- комп -->
                     <p><small class="text-lowercase text-muted">{{$obj->IPADDR}}</small></p>
                     
-                </td>    
-               <td>{{$obj->OSNAME}}<p><small class="text-lowercase text-muted">{{$obj->USERAGENT}}</small></p></td>
-                <td>{{$obj->PROCESSORT}} <small class="text-muted">{{$obj->PROCESSORS}} GHz</small></td> 
-               <td>{{$obj->MEMORY}}</td> 
-               <td>
-                   @foreach ($obj->storages as $hdd)
-                   <p>{{$hdd->NAME}} <small class="text-lowercase text-muted">{{$hdd->DISKSIZE}} Гб</small></p>
-                   @endforeach
-               </td>
-               <td>
-                   @foreach ($obj->monitors as $mon)
-                   <p>{{$mon->MANUFACTURER}} <br><small class="text-lowercase text-muted">{{$mon->CAPTION}}</small></p>
-                   @endforeach
-               </td>
+                </td>  
+                <td> 
+                    @foreach ($obj->printers as $printer)
+                        <p>{{$printer->NAME}}</p>
+                    @endforeach
+                </td>
+                <td> 
+                    @foreach ($obj->printers as $printer)
+                        <p>{{$printer->PORT}}</p>
+                    @endforeach
+                </td>
             </tr> 
             @endforeach
         </tbody> 

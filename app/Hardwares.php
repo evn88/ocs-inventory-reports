@@ -25,6 +25,11 @@ class Hardwares extends Model
        return $this->hasOne(Accountinfo::class, 'HARDWARE_ID', 'ID'); 
     }
     
+    public function printers()
+    {
+       return $this->hasMany(Printers::class, 'HARDWARE_ID', 'ID'); 
+    }
+    
     
     public function getProcessorsAttribute($value){
         return round($value/1000,1);
