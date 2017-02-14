@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1>Все компьютеры <small>(кол-во: {{App\Hardwares::count()}})</small></h1>
+    <h1>Все принтеры <small>(кол-во: {{App\Hardwares::count()}})</small></h1>
 
     <table class="table table-bordered"> 
         <thead> 
