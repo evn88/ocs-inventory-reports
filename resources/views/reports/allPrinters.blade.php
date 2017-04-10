@@ -33,10 +33,13 @@
                     <p><small class="text-lowercase text-muted">{{$obj->IPADDR}}</small></p>
                     
                 </td>  
-                <td> 
+                <td>
+                    <p>{{$obj->accountinfo['fields_7']}}</p>
+                    <!--
                     @foreach ($obj->printers as $printer)
                         <p>{{$printer->NAME}}</p>
                     @endforeach
+                    -->
                 </td>
                 <td> 
                     @foreach ($obj->printers as $printer)
