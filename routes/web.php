@@ -16,3 +16,7 @@ Route::get('/', function(){
 Route::get('/report', 'ReportsController@allComputers');
 Route::get('/report/printers', 'ReportsController@allPrinters');
 Route::get('/report/monitors', 'ReportsController@allMonitors');
+Route::get('/report/licenses', 'ReportsController@allLicenses');
+Route::get('/report/test', 'ReportsController@test');
+
+Route::get('/api/licenses/{id}', 'LicensesController@getLicenseImage');

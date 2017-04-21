@@ -15,6 +15,7 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
         <link href="{{ url('/lib/tablesorter/css/theme.bootstrap.css') }}" rel="stylesheet"> 
         <link href="{{ url('/lib/pager/jquery.tablesorter.pager.css') }}" rel="stylesheet"> 
+        <link href="{{ url('/css/app.css') }}" rel="stylesheet"> 
 
     </head>
     <body id="app-layout">
@@ -52,9 +53,10 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('/report') }}">Все компьютеры</a></li>
-                                <li><a href="{{ url('/report/printers') }}">Все принтеры</a></li>
-                                <li><a href="{{ url('/report/monitors') }}">Все мониторы</a></li>
+                                <li><a href="{{ url('/report') }}">Компьютеры</a></li>
+                                <li><a href="{{ url('/report/printers') }}">Принтеры</a></li>
+                                <li><a href="{{ url('/report/monitors') }}">Мониторы</a></li>
+                                <li><a href="{{ url('/report/licenses') }}">Лицензии</a></li>
                             </ul>
                         </li>
                         <li>
@@ -76,5 +78,6 @@
         <script src="{{ url('/lib/tablesorter/js/jquery.tablesorter.widgets.js') }}"></script>
         <script src="{{ url('/lib/pager/jquery.tablesorter.pager.js') }}"></script>
         <script src="{{ url('/lib/tablesorter/js/config.js') }}"></script>
+        @yield('script')
     </body>
 </html>

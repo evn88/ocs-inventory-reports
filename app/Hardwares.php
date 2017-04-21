@@ -30,6 +30,11 @@ class Hardwares extends Model
        return $this->hasMany(Printers::class, 'HARDWARE_ID', 'ID'); 
     }
     
+    public function temp_files()
+    {
+       return $this->hasMany(Temp_files::class, 'ID_DDE', 'ID'); 
+    }
+   
     
     public function getProcessorsAttribute($value){
         return round($value/1000,1);

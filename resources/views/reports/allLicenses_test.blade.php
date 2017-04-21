@@ -14,11 +14,8 @@
                 <th class="filter-select filter-exact" data-placeholder="Выбрать группу">Подразделение</th>
                 <th>Пользователь/проф.</th>
                 <th>Компьютер</th>
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">ОС</th>
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">CPU</th> 
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">RAM</th> 
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">HDD</th> 
-                <th class="filter-select filter-exact" data-placeholder="Выбрать группу">Мониторы</th>
+                <th>Лицензия Windows</th>
+                <th>Фото лицензии Windows</th> 
             </tr> 
         </thead> 
        <tbody> 
@@ -37,21 +34,17 @@
                     
                 </td>    
                 <td>
-                    {{$obj->OSNAME}}
-                    <p><small class="text-lowercase text-muted">{{$obj->USERAGENT}}</small></p>
+                    {{$obj->WINPRODKEY}}
+                    <p><small class="text-muted">{{$obj->OSNAME}}</small></p>
+                    
                 </td>
-                <td>{{$obj->PROCESSORT}} <small class="text-muted">{{$obj->PROCESSORS}} GHz</small></td> 
-               <td>{{$obj->MEMORY}}</td> 
-               <td>
-                   @foreach ($obj->storages as $hdd)
-                   <p>{{$hdd->NAME}} <small class="text-lowercase text-muted">{{$hdd->DISKSIZE}} Гб</small></p>
-                   @endforeach
-               </td>
-               <td>
-                   @foreach ($obj->monitors as $mon)
-                   <p>{{$mon->MANUFACTURER}} <br><small class="text-lowercase text-muted">{{$mon->CAPTION}}</small></p>
-                   @endforeach
-               </td>
+                <td width="400px">
+                    @foreach ($obj->temp_files as $files)
+                    <i id="i_{{ $files->ID }}" class="glyphicon glyphicon-repeat"></i>
+                    <img id="{{ $files->ID }}" src="" width="400px" alt="{{$files->FILE_NAME}}" title="{{$files->FILE_NAME}}" style="display: none">
+                         
+                    @endforeach
+                </td> 
             </tr> 
             @endforeach
         </tbody> 
@@ -80,4 +73,33 @@
 
 @endsection
 
+@section('script')
+<script>
+            $(document).ready(function () {
+            //получаем массив с идентификаторами DCID_OBJID_DEVID_JOINID
+            var obj = jQuery.parseJSON('{!! $ids !!}');
 
+            for (var p in obj) {
+                //далее в цикле вытаскиваем данные Ajax запросом и подставляем 
+               
+                var id = obj[p];
+                 //console.log(obj[p]);
+                $.ajax({
+                    type: "GET",
+                    url: "/api/licenses/" + obj[p],
+                    //data: "id=" + obj[p],
+                    dataType: "json",
+                    success: function (msg) {
+                        $("#" + msg.id).show().attr("src",msg.img);
+                        $("#i_" + msg.id).hide();
+                        //$(".line").peity("line");
+                        //console.log(msg);
+                        //console.log(p.responseText);
+                    }
+                });
+                //console.log(row);
+            }
+
+        });
+</script>
+@endsection
