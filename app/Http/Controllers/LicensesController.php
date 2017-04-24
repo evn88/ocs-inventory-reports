@@ -43,7 +43,7 @@ class LicensesController extends Controller
             return $data;
         } else
         {
-            
+            return false;
         }
         
     }
