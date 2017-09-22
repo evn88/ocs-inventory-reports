@@ -14,6 +14,11 @@ class Hardwares extends Model
     {
         return $this->hasMany(Storages::class, 'HARDWARE_ID', 'ID')->where('TYPE', 'like', '%disk%');
     }
+
+    public function drives()
+    {
+        return $this->hasMany(Drives::class, 'HARDWARE_ID', 'ID')->where('TYPE', 'like', '%Hard Drive%');
+    }
     
     public function monitors()
     {

@@ -15,7 +15,7 @@
                 <th>Пользователь/проф.</th>
                 <th>Компьютер</th>
                 <th>Лицензия Windows</th>
-                <th>Фото лицензии Windows</th> 
+                <th>Изображение лицензий</th> 
             </tr> 
         </thead> 
        <tbody> 
@@ -40,38 +40,19 @@
                 </td>
                 <td width="400px">
                     @foreach ($obj->temp_files as $files)
-                    <i id="i_{{ $files->ID }}" class="glyphicon glyphicon-repeat gly-spin"></i>
+                    <i id="i_{{ $files->ID }}" class="glyphicon glyphicon-repeat"></i>
                     <img id="{{ $files->ID }}" src="" width="400px" alt="{{$files->FILE_NAME}}" title="{{$files->FILE_NAME}}" style="display: none">
-                         
                     @endforeach
                 </td> 
             </tr> 
             @endforeach
         </tbody> 
-        <!--<tfoot>
-            <tr>
-                <th colspan="8" class="ts-pager form-horizontal">
-                    <button type="button" class="btn first"><i class="icon-step-backward glyphicon glyphicon-step-backward"></i></button>
-                    <button type="button" class="btn prev"><i class="icon-arrow-left glyphicon glyphicon-backward"></i></button>
-                    <span class="pagedisplay"></span> 
-                    <button type="button" class="btn next"><i class="icon-arrow-right glyphicon glyphicon-forward"></i></button>
-                    <button type="button" class="btn last"><i class="icon-step-forward glyphicon glyphicon-step-forward"></i></button>
-                    <select class="pagesize input-mini" title="Строк на странице">
-                        <option selected="selected" value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                        <option value="40">40</option>
-                    </select>
-                    <select class="pagenum input-mini" title="Выбрать страницу"></select>
-                </th>
-            </tr>
-        </tfoot>
-        -->
     </table>
 </div>
 
 
 @endsection
+
 
 @section('script')
 <script>
@@ -83,18 +64,16 @@
                 //далее в цикле вытаскиваем данные Ajax запросом и подставляем 
                
                 var id = obj[p];
+
                 $.ajax({
                     type: "GET",
                     url: "/api/licenses/" + obj[p],
-                    //data: "id=" + obj[p],
                     dataType: "json",
                     success: function (msg) {
                         $("#" + msg.id).show().attr("src",msg.img);
                         $("#i_" + msg.id).hide();
-
                     }
                 });
-
             }
 
         });

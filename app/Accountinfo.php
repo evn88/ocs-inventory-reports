@@ -15,4 +15,9 @@ class Accountinfo extends Model
         
         return Carbon::parse($value)->format('Y');
     }
+
+    public function scopeOfTag($query, $type)
+    {
+        return $query->where('TAG', $type);
+    }
 }

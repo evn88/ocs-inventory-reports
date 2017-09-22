@@ -57,6 +57,7 @@
                                 <li><a href="{{ url('/report/printers') }}">Принтеры</a></li>
                                 <li><a href="{{ url('/report/monitors') }}">Мониторы</a></li>
                                 <li><a href="{{ url('/report/licenses') }}">Лицензии</a></li>
+                                <li><a href="{{ url('/report/capacity') }}">HDD capacity</a></li>
                             </ul>
                         </li>
                         <li>
