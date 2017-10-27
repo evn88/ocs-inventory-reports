@@ -22,3 +22,6 @@ Route::get('/report/capacity', 'ReportsController@hddCapacity');
 Route::get('/report/test', 'ReportsController@test');
 
 Route::get('/api/licenses/{id}', 'LicensesController@getLicenseImage');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
