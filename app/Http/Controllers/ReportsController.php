@@ -38,26 +38,14 @@ class ReportsController extends Controller
     {
         $objects = Hardwares::with('storages','drives','accountinfo','monitors')->get();
         
-        //dd($objects->first());
-        //dd(\App\Temp_files::with('hardwares')->get());
         return view('reports.allMonitors', ['objects'=> $objects]);
-
     }
 
      public function hddCapacity()
     {
-        $objects = DB::select(DB::raw('SELECT accountinfo.HARDWARE_ID, accountinfo.TAG, SUM(drives.TOTAL), SUM(drives.FREE) FROM accountinfo join drives on accountinfo.HARDWARE_ID = drives.HARDWARE_ID group by accountinfo.TAG;'));
-
-
-
-        //$objects = Hardwares::with('storages','drives','accountinfo')->get();
-        //$objects = Drives::with('accountinfo','hardwares')->get();
-
-        //$objects = $objects->drives->get();
-        dd($objects);
-        //dd(\App\Temp_files::with('hardwares')->get());
+        $objects = DB::select('call HDD_capacity_by_filials');
+        
         return view('reports.hddCapacity', ['objects'=> $objects]);
-
     }
     
     public function test()

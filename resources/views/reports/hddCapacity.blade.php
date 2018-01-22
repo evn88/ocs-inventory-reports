@@ -1,35 +1,28 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="container-fluid">
-    <h1>HDD CAPACITY<small>(кол-во: {{App\Drives::count()}})</small></h1>
+<div class="container">
+    <h1>HDD CAPACITY<small>(кол-во дисков всего: {{App\Drives::count()}})</small></h1>
 
     <table class="table table-bordered"> 
         <thead> 
             <tr> 
-                <th>hid</th>  
+                <th width="10px">hid</th>  
                 <th class="filter-select filter-exact" data-placeholder="Выбрать группу">Подразделение</th>
-                <th>HDD</th>
-                <th>HDD CAPACITY</th>  
+                <th data-sortinitialorder="asc" width="50px">HDD CAPACITY (Gb)</th>  
             </tr> 
         </thead> 
        <tbody> 
             <?php $i=1; ?>
             @foreach ($objects as $obj)
             <tr>    
-                <td scope="row">{{$obj->ID}}</td> 
-                <td>{{$obj->accountinfo['TAG']}}</td>
+                <td scope="row">{{$obj->HARDWARE_ID}}</td> 
+                <td>{{$obj->TAG}}</td>
 
                <td>
-                   @foreach ($obj->storages as $hdd)
-                   <p>{{$hdd->NAME}} <small class="text-lowercase text-muted">{{$hdd->DISKSIZE}} Гб</small></p>
-                   @endforeach
+                   <p>{{round($obj->Occupate_space_Gb,0)}} </p>
                </td>
-               <td>
-                   @foreach ($obj->drives as $drive)
-                   <p>{{$drive->LETTER }}<small class="text-lowercase text-muted">{{$drive->TOTAL - $drive->FREE }} Гб</small></p>
-                   @endforeach
-               </td>
+
             </tr> 
             @endforeach
         </tbody> 
