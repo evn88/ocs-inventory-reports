@@ -13,15 +13,18 @@
 Route::get('/', function(){
     return view('welcome');
 });
+//Route::get('/home', 'HomeController@index')->name('home');
+
 Route::get('/report', 'ReportsController@allComputers');
 Route::get('/report/printers', 'ReportsController@allPrinters');
 Route::get('/report/monitors', 'ReportsController@allMonitors');
 Route::get('/report/licenses', 'ReportsController@allLicenses');
 Route::get('/report/capacity', 'ReportsController@hddCapacity');
-
 Route::get('/report/test', 'ReportsController@test');
+
+Route::get('/exports', 'ExportsController@index');
+Route::get('/exports/rac', 'ExportsController@rac');
+
 
 Route::get('/api/licenses/{id}', 'LicensesController@getLicenseImage');
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

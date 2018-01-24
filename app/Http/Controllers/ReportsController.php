@@ -12,19 +12,13 @@ class ReportsController extends Controller
     public function allComputers()
     {
         $objects = Hardwares::with('storages','drives','accountinfo','monitors')->get();
-        
-        //dd($objects->first());
-        //dd(\App\Temp_files::with('hardwares')->get());
         return view('reports.allComputers', ['objects'=> $objects]);
-
     }
     
     public function allPrinters()
     {
         $objects = Hardwares::with('printers','accountinfo')->get();
-
         return view('reports.allPrinters', ['objects'=> $objects]);
-
     }
     
     public function allLicenses()
@@ -37,31 +31,25 @@ class ReportsController extends Controller
     public function allMonitors()
     {
         $objects = Hardwares::with('storages','drives','accountinfo','monitors')->get();
-        
         return view('reports.allMonitors', ['objects'=> $objects]);
     }
 
      public function hddCapacity()
     {
         $objects = DB::select('call HDD_capacity_by_filials');
-        
         return view('reports.hddCapacity', ['objects'=> $objects]);
     }
     
     public function test()
     {
         $objects = DB::select('call HDD_capacity_by_filials');
-
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
- 
         
         /* Note: any element you append to a document must reside inside of a Section. */
 
         // Adding an empty Section to the document...
         $section = $phpWord->addSection();
-
-        
 
         // Adding Text element to the Section having font styled by default...
         $section->addText(
@@ -70,19 +58,27 @@ class ReportsController extends Controller
             )
         );
 
+        $totalSpace = 0;
         foreach ($objects as $obj){
         $section->addText(
                 $obj->TAG.',      Занято: '.round($obj->Occupate_space_Gb,0).' Гб'
             );
+            $totalSpace += round($obj->Occupate_space_Gb,0);
         }
+
+        $section->addText(
+            htmlspecialchars(
+                'ИТОГО: '.$totalSpace.' Гб'
+            )
+        );
             
         // Saving the document as HTML file...
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        $objWriter->save('result/helloWorld.docx');
+        $objWriter->save('exports/out/helloWorld.docx');
 
 
         echo date('H:i:s'), ' Creating new TemplateProcessor instance...';
-        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('result/Sample_07_TemplateCloneRow.docx');
+        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('exports/templates/Sample_07_TemplateCloneRow.docx');
         // Variables on different parts of document
         $templateProcessor->setValue('weekday', date('l'));            // On section/content
         $templateProcessor->setValue('time', date('d.m.Y H:i'));             // On footer
@@ -115,7 +111,7 @@ class ReportsController extends Controller
         $templateProcessor->setValue('userName#3', 'Ray');
         $templateProcessor->setValue('userPhone#3', '+1 428 889 775');
         echo date('H:i:s'), ' Saving the result document...';
-        $templateProcessor->saveAs('result/TemplateCloneRow.docx');
+        $templateProcessor->saveAs('exports/out/TemplateCloneRow.docx');
 
 
     }

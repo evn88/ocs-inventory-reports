@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>HDD CAPACITY<small>(кол-во дисков всего: {{App\Drives::count()}})</small></h1>
+    <h1>Export<small>(кол-во дисков всего: {{App\Drives::count()}})</small></h1>
 
     <table class="table table-bordered"> 
         <thead> 
