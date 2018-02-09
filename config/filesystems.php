@@ -67,6 +67,11 @@ return [
             'root' => storage_path('app/license'),
             'visibility' => 'public',
         ],
+        'exports' => [
+            'driver' => 'local',
+            'root' => storage_path('app/exports'),
+            'visibility' => 'public',
+        ],
 
     ],
 

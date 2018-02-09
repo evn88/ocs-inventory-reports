@@ -57,7 +57,7 @@
 @section('script')
 <script>
             $(document).ready(function () {
-            //получаем массив с идентификаторами DCID_OBJID_DEVID_JOINID
+            //получаем массив с идентификаторами 
             var obj = jQuery.parseJSON('{!! $ids !!}');
 
             for (var p in obj) {

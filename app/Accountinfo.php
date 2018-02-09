@@ -20,4 +20,20 @@ class Accountinfo extends Model
     {
         return $query->where('TAG', $type);
     }
+
+    public function scopeFilials($query)
+    {
+        $filials = [];
+        foreach($query->get() as $q){
+            if (!in_array($q->fields_4, $filials) && $q->fields_4 !==NULL){
+                array_push($filials, $q->fields_4);
+            }
+        }
+        return $filials;
+    }
+
+    public function apc()
+    {
+       return $this->hasOne(Configs::class, 'IVALUE', 'fields_30'); 
+    }
 }
