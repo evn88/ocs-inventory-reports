@@ -21,21 +21,20 @@ class ExportsController extends Controller
         $disk = Storage::disk('exports');
         $filials = Accountinfo::filials(); //массив филиалов
         $objects = Hardwares::with('storages','drives','accountinfo','monitors', 'bios','softwares')->get();
-        $raw = $objects->where('accountinfo.fields_4', 'Волгоград');
+        //$raw = $objects->where('accountinfo.fields_4', 'Волгоград');
 
         $date_gen = date('H:i:s');
    
-            foreach($filials as $f){ //цикл филиалы
+            foreach($filials as &$f){ //цикл филиалы
                 $comps = $objects->where('accountinfo.fields_4', $f); //получаем значения по каждому компу
                 $disk->makeDirectory('/out/'.$f); //создаем директории для выгрузки
                 
-                foreach($comps as $comp){ //цикл компьютеры                   
+                foreach($comps as $key => &$comp){ //цикл компьютеры                   
                     $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('app/exports').'/templates/rac.docx');
 
                     // Variables on different parts of document
-                    $templateProcessor->setValue('weekday', date('l'));            // On section/content
                     $templateProcessor->setValue('time', date('d.m.Y H:i'));             // On footer
-                    $templateProcessor->setValue('serverName', realpath(__DIR__)); // On header
+
 
 
                     //Header
@@ -87,45 +86,40 @@ class ExportsController extends Controller
                     //OS
                     $templateProcessor->setValue('osName', $comp->OSNAME);
                     $templateProcessor->setValue('osVersion', $comp->OSVERSION);
-                    $templateProcessor->setValue('osVersion', $comp->WINPRODID);
+                    $osEditor =  explode(" ", $comp->OSNAME);
+                    $templateProcessor->setValue('osEditor', $osEditor[0]);
+                    $templateProcessor->setValue('osLicenseNum', $comp->WINPRODID);
 
                     //SOFT
-                    $a = 1;
+                    $a = 0;
                     foreach($comp['softwares'] as $soft){
-                        if(stristr($soft['NAME'], 'Update') === FALSE){
+                        if((stristr($soft['NAME'], 'Update') || stristr($soft['NAME'], 'Hotfix')) === FALSE){
                             $a++;
                         }
+                        //if($i === $a || $a>70){ break; }
                     }
-                    $templateProcessor->cloneRow('softName', $a);
-                    $i=0;
+
+                    $templateProcessor->cloneRow('sNum', $a-1);
+                    $i=1;
                     foreach($comp['softwares'] as $soft){
-                        if(stristr($soft['NAME'], 'Update') === FALSE){
-                            $templateProcessor->setValue('sNum#'.$i, $i);
-                            $templateProcessor->setValue('softName#'.$i, (string)$soft['NAME']);
-                            $templateProcessor->setValue('softVersion#'.$i, (string)$soft['VERSION']);
-                            $templateProcessor->setValue('softEditor#'.$i, (string)$soft['PUBLISHER']);
+                        if((stristr($soft['NAME'], 'Update') || stristr($soft['NAME'], 'Hotfix')) === FALSE){
+                            $templateProcessor->setValue('sNum#'.$i, $i+1);
+                            $templateProcessor->setValue('softName#'.$i, htmlspecialchars($soft['NAME']));
+                            $templateProcessor->setValue('softVersion#'.$i, htmlspecialchars($soft['VERSION']));
+                            $templateProcessor->setValue('softEditor#'.$i, htmlspecialchars($soft['PUBLISHER']));
                             $i++;
                         }
+                        if($i === $a ){ break; }
                     }
-                    //$templateProcessor->setValue('myReplacedValue', count($objects));
 
-
+                    $softCount[$key]['name'] = $comp->NAME;
+                    $softCount[$key]['count'] = $a;
                     $templateProcessor->saveAs(storage_path('app/exports').'/out/'.$f.'/'.$comp->NAME.'.docx');
                 }
-                
-            }
+                break;  
+            }       
 
-        /*
-        $i = 1;
-        foreach ($objects as $obj){
-            $templateProcessor->setValue('softName#'.$i, $obj->TAG);
-            $templateProcessor->setValue('sNum#'.$i, round($obj->Occupate_space_Gb,0));
-            $i++;
-        }*/
-        
-        
-
-        return view('exports.rac', ['objects'=> $objects,'date'=>$date_gen]);
+        return view('exports.rac', ['objects'=> $objects,'date'=>$date_gen, 'softCount'=>$softCount]);
     }
 
 }

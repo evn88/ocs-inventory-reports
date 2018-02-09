@@ -8,5 +8,5 @@ class Configs extends Model
 {
     protected $primaryKey = "IVALUE";
     protected $table = "config";
-    
+
 }
