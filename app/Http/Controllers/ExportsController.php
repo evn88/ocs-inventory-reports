@@ -55,9 +55,9 @@ class ExportsController extends Controller
                     //Мониторы
                     $i=0;
                     foreach($comp['monitors'] as $monitor){
-                       $monitorManufacturer[$i] = $i.")".$monitor->MANUFACTURER;
-                       $monitorModel[$i] = $i.")".$monitor->CAPTION;
-                       $monitorSerial[$i] = ($monitor->SERIAL) ? $i.")".$monitor->SERIAL : "-//-";
+                       $monitorManufacturer[$i] = $i+1.": ".$monitor->MANUFACTURER;
+                       $monitorModel[$i] = $i+1.": ".$monitor->CAPTION;
+                       $monitorSerial[$i] = ($monitor->SERIAL) ? $i+1.": ".$monitor->SERIAL : "-//-";
                        $i++;
                     }
                    
