@@ -46,17 +46,8 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                Экспорт <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('/exports') }}"></a></li>
-                                <li><a href="{{ url('/exports/rac') }}">Выгрузка для РАЦ</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="{{ url('/exports') }}">Экспорт</a></li>
+                       
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 Отчеты <span class="caret"></span>

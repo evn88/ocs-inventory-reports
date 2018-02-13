@@ -18,13 +18,11 @@ class ExportsController extends Controller
 
     public function rac()
     {
+        $date_gen = date('d.m.Y H:i');
         $disk = Storage::disk('exports');
         $filials = Accountinfo::filials(); //массив филиалов
         $objects = Hardwares::with('storages','drives','accountinfo','monitors', 'bios','softwares')->get();
-        //$raw = $objects->where('accountinfo.fields_4', 'Волгоград');
 
-        $date_gen = date('H:i:s');
-   
             foreach($filials as &$f){ //цикл филиалы
                 $comps = $objects->where('accountinfo.fields_4', $f)->where('accountinfo.fields_32','=','1'); //получаем значения по каждому компу
                 $disk->makeDirectory('/out/'.$f); //создаем директории для выгрузки
@@ -33,7 +31,7 @@ class ExportsController extends Controller
                     $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('app/exports').'/templates/rac.docx');
 
                     // Variables on different parts of document
-                    $templateProcessor->setValue('time', date('d.m.Y H:i'));             // On footer
+                    $templateProcessor->setValue('time', $date_gen);             // On footer
 
                     //Header
                     $templateProcessor->setValue('computerName', $comp->NAME);
@@ -47,8 +45,8 @@ class ExportsController extends Controller
                     $templateProcessor->setValue('uchastok', $uchastok);
 
                     //address
-                    $addresses =json_decode($disk->get('/templates/addresses.json'));
-                    $templateProcessor->setValue('address', @$addresses->{$uchastok});
+                    $softCountddresses =json_decode($disk->get('/templates/addresses.json'));
+                    $templateProcessor->setValue('address', @$softCountddresses->{$uchastok});
 
                     //profession
                     $prof = ($comp['accountinfo']->fields_6) ? $comp['accountinfo']->fields_6 : "-//-";
@@ -79,32 +77,28 @@ class ExportsController extends Controller
                     $templateProcessor->setValue('computerSerialNum', $comp['bios']['SSN']);
 
                     //APC
-                    $apcManufacturer = explode(" ",$comp['accountinfo']['apc']['TVALUE']); //возможно будут проблемы с отображением правильных значений
-                    // нужно добавить ->where('config.NAME','like','ACCOUNT_VALUE_IBP_%')
-
+                    $softCountpcManufacturer = explode(" ",$comp['accountinfo']['apc']['TVALUE']); //возможно будут проблемы с отображением правильных значений
                     $templateProcessor->setValue('apcModel', $comp['accountinfo']['apc']['TVALUE']);
-                    $templateProcessor->setValue('apcManufacturer', $apcManufacturer[0]);
+                    $templateProcessor->setValue('apcManufacturer', $softCountpcManufacturer[0]);
 
                     //OS
+                    $osEditor =  explode(" ", $comp->OSNAME);
                     $templateProcessor->setValue('osName', $comp->OSNAME);
                     $templateProcessor->setValue('osVersion', $comp->OSVERSION);
-                    $osEditor =  explode(" ", $comp->OSNAME);
                     $templateProcessor->setValue('osEditor', $osEditor[0]);
                     $templateProcessor->setValue('osLicenseNum', $comp->WINPRODID);
 
                     //SOFT
-                    $a = 0;
+                    $softCount = 0;
                     foreach($comp['softwares'] as $soft){
-                        //if((stristr($soft['NAME'], 'Update') || stristr($soft['NAME'], 'Hotfix' || stristr($soft['NAME'],'C++'))) === FALSE){
                         if(preg_match("/(Update|Hotfix|Redistributable|Additional|Runtime)\b/i", $soft['NAME'])===0){
-                            $a++;
+                            $softCount++;
                         }
                     }
+                    $templateProcessor->cloneRow('sNum', $softCount-1); //создаем необходимое кол-во строк в таблице
 
-                    $templateProcessor->cloneRow('sNum', $a-1);
-                    $i=1;
+                    $i = 1;
                     foreach($comp['softwares'] as $soft){
-                        //dd(preg_match("/(Update|Hotfix|Redistributable|Additional)\b/i", $soft['NAME']));
                         if(preg_match("/(Update|Hotfix|Redistributable|Additional|Runtime)\b/i", $soft['NAME'])===0){
                             $templateProcessor->setValue('sNum#'.$i, $i+1);
                             $templateProcessor->setValue('softName#'.$i, htmlspecialchars($soft['NAME']));
@@ -112,17 +106,14 @@ class ExportsController extends Controller
                             $templateProcessor->setValue('softEditor#'.$i, htmlspecialchars($soft['PUBLISHER']));
                             $i++;
                         }
-                        if($i === $a ){ break; }
+                        if($i === $softCount ){ break; } //не выводим последнюю строку, там информация об ОС которая уже есть
                     }
-
-                    $softCount[$key]['name'] = $comp->NAME;
-                    $softCount[$key]['count'] = $a;
+                    
+                    $softCountArr[$key]['name'] = $comp->NAME;
+                    $softCountArr[$key]['count'] = $softCount;
                     $templateProcessor->saveAs(storage_path('app/exports/out/').$f.'/'.$comp->NAME.'.docx');
                 }
-                 
             }       
-
-        return view('exports.rac', ['objects'=> $objects,'date'=>$date_gen, 'softCount'=>$softCount]);
+        return view('exports.rac', ['objects'=> $objects,'date'=>$date_gen, 'softCount'=>$softCountArr]);
     }
-
 }
