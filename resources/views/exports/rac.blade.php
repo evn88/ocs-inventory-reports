@@ -4,8 +4,9 @@
 <div class="container">
     <h1>Выгрузка для РАЦ</h1>
     <p>Сгенерировано {{$date}}</p>
-    <p><a href="/exports/out/exportForRac.docx">Загрузить анкеты</a></p>
+    <p>Анкеты расположены по пути "Z:\ocs\storage\app\exports\out"</p>
 
+    <hr>
     @foreach($softCount as $sCount)
     <p>{{$sCount['name']. " - " . $sCount['count']}}</p>
     @endforeach
