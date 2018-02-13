@@ -26,7 +26,7 @@ class ExportsController extends Controller
         $date_gen = date('H:i:s');
    
             foreach($filials as &$f){ //цикл филиалы
-                $comps = $objects->where('accountinfo.fields_4', $f); //получаем значения по каждому компу
+                $comps = $objects->where('accountinfo.fields_4', $f)->where('accountinfo.fields_32','=','1'); //получаем значения по каждому компу
                 $disk->makeDirectory('/out/'.$f); //создаем директории для выгрузки
                 
                 foreach($comps as $key => &$comp){ //цикл компьютеры                   
@@ -34,8 +34,6 @@ class ExportsController extends Controller
 
                     // Variables on different parts of document
                     $templateProcessor->setValue('time', date('d.m.Y H:i'));             // On footer
-
-
 
                     //Header
                     $templateProcessor->setValue('computerName', $comp->NAME);
@@ -48,6 +46,10 @@ class ExportsController extends Controller
                     $uchastok = ($comp['accountinfo']->TAG) ? $comp['accountinfo']->TAG : "-//-";
                     $templateProcessor->setValue('uchastok', $uchastok);
 
+                    //address
+                    $addresses =json_decode($disk->get('/templates/addresses.json'));
+                    $templateProcessor->setValue('address', @$addresses->{$uchastok});
+
                     //profession
                     $prof = ($comp['accountinfo']->fields_6) ? $comp['accountinfo']->fields_6 : "-//-";
                     $templateProcessor->setValue('profession', $prof);
@@ -55,9 +57,9 @@ class ExportsController extends Controller
                     //Мониторы
                     $i=0;
                     foreach($comp['monitors'] as $monitor){
-                       $monitorManufacturer[$i] = $monitor->MANUFACTURER;
-                       $monitorModel[$i] = $monitor->CAPTION;
-                       $monitorSerial[$i] = ($monitor->SERIAL) ? $monitor->SERIAL : "-//-";
+                       $monitorManufacturer[$i] = $i.")".$monitor->MANUFACTURER;
+                       $monitorModel[$i] = $i.")".$monitor->CAPTION;
+                       $monitorSerial[$i] = ($monitor->SERIAL) ? $i.")".$monitor->SERIAL : "-//-";
                        $i++;
                     }
                    
@@ -93,16 +95,17 @@ class ExportsController extends Controller
                     //SOFT
                     $a = 0;
                     foreach($comp['softwares'] as $soft){
-                        if((stristr($soft['NAME'], 'Update') || stristr($soft['NAME'], 'Hotfix')) === FALSE){
+                        //if((stristr($soft['NAME'], 'Update') || stristr($soft['NAME'], 'Hotfix' || stristr($soft['NAME'],'C++'))) === FALSE){
+                        if(preg_match("/(Update|Hotfix|Redistributable|Additional|Runtime)\b/i", $soft['NAME'])===0){
                             $a++;
                         }
-                        //if($i === $a || $a>70){ break; }
                     }
 
                     $templateProcessor->cloneRow('sNum', $a-1);
                     $i=1;
                     foreach($comp['softwares'] as $soft){
-                        if((stristr($soft['NAME'], 'Update') || stristr($soft['NAME'], 'Hotfix')) === FALSE){
+                        //dd(preg_match("/(Update|Hotfix|Redistributable|Additional)\b/i", $soft['NAME']));
+                        if(preg_match("/(Update|Hotfix|Redistributable|Additional|Runtime)\b/i", $soft['NAME'])===0){
                             $templateProcessor->setValue('sNum#'.$i, $i+1);
                             $templateProcessor->setValue('softName#'.$i, htmlspecialchars($soft['NAME']));
                             $templateProcessor->setValue('softVersion#'.$i, htmlspecialchars($soft['VERSION']));
@@ -114,9 +117,9 @@ class ExportsController extends Controller
 
                     $softCount[$key]['name'] = $comp->NAME;
                     $softCount[$key]['count'] = $a;
-                    $templateProcessor->saveAs(storage_path('app/exports').'/out/'.$f.'/'.$comp->NAME.'.docx');
+                    $templateProcessor->saveAs(storage_path('app/exports/out/').$f.'/'.$comp->NAME.'.docx');
                 }
-                break;  
+                 
             }       
 
         return view('exports.rac', ['objects'=> $objects,'date'=>$date_gen, 'softCount'=>$softCount]);
