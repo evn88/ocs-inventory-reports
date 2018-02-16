@@ -7,6 +7,7 @@ use App\Hardwares;
 use App\Drives;
 use App\Accountinfo;
 use App\Apc;
+use App\Configs;
 use Illuminate\Support\Facades\Storage;
 
 class ExportsController extends Controller
@@ -55,9 +56,9 @@ class ExportsController extends Controller
                     //Мониторы
                     $i=0;
                     foreach($comp['monitors'] as $monitor){
-                       $monitorManufacturer[$i] = $i+1.": ".$monitor->MANUFACTURER;
-                       $monitorModel[$i] = $i+1.": ".$monitor->CAPTION;
-                       $monitorSerial[$i] = ($monitor->SERIAL) ? $i+1.": ".$monitor->SERIAL : "-//-";
+                       $monitorManufacturer[$i] = $i.": ".$monitor->MANUFACTURER;
+                       $monitorModel[$i] = $i.": ".$monitor->CAPTION;
+                       $monitorSerial[$i] = ($monitor->SERIAL) ? $i.": ".$monitor->SERIAL : "-//-";
                        $i++;
                     }
                    
@@ -77,9 +78,15 @@ class ExportsController extends Controller
                     $templateProcessor->setValue('computerSerialNum', $comp['bios']['SSN']);
 
                     //APC
-                    $softCountpcManufacturer = explode(" ",$comp['accountinfo']['apc']['TVALUE']); //возможно будут проблемы с отображением правильных значений
-                    $templateProcessor->setValue('apcModel', $comp['accountinfo']['apc']['TVALUE']);
-                    $templateProcessor->setValue('apcManufacturer', $softCountpcManufacturer[0]);
+                    $apc = Configs::apc($comp['accountinfo']->fields_30)->get();
+   
+                    $apcTvalue = (isset($apc[0])) ?  $apc[0]['TVALUE'] : "-//-";
+                    $apcCountpcManufacturer = explode(" ", $apcTvalue); 
+                    $templateProcessor->setValue('apcModel',  $apcTvalue);
+                    $templateProcessor->setValue('apcManufacturer', $apcCountpcManufacturer[0]);
+                    
+                    $softCountArr[$key]['apc'] = $apcTvalue; //lдля вывода на экран
+                    
 
                     //OS
                     $osEditor =  explode(" ", $comp->OSNAME);
@@ -113,6 +120,7 @@ class ExportsController extends Controller
                     $softCountArr[$key]['count'] = $softCount;
                     $templateProcessor->saveAs(storage_path('app/exports/out/').$f.'/'.$comp->NAME.'.docx');
                 }
+                break;
             }       
         return view('exports.rac', ['objects'=> $objects,'date'=>$date_gen, 'softCount'=>$softCountArr]);
     }

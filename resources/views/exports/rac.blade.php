@@ -8,7 +8,7 @@
 
     <hr>
     @foreach($softCount as $sCount)
-    <p>{{$sCount['name']. " - " . $sCount['count']}}</p>
+    <p>{{$sCount['name']. " - " . $sCount['count'] . " - " . $sCount['apc']}}</p>
     @endforeach
     
 </div>
