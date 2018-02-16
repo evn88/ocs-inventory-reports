@@ -38,6 +38,15 @@ class ExportsController extends Controller
                     $templateProcessor->setValue('computerName', $comp->NAME);
                     $templateProcessor->setValue('fio', $comp['accountinfo']->fields_5);
                     
+                    //organization
+                    $organization[NULL] = "-//-"; 
+                    $organization[0] = "-//-";
+                    $organization[1] = "ПАО \"Волгоградоблэлектро\"";
+                    $organization[2] = "ООО \"Волгоградоблэлектросбыт\"";
+                    $organization[3] = "ООО \"Волгоградская ГРЭС\"";
+ 
+                    $templateProcessor->setValue('organization', @$organization[$comp['accountinfo']->fields_15]);
+
                     //filial
                     $templateProcessor->setValue('filial', $f);
 
@@ -120,7 +129,7 @@ class ExportsController extends Controller
                     $softCountArr[$key]['count'] = $softCount;
                     $templateProcessor->saveAs(storage_path('app/exports/out/').$f.'/'.$comp->NAME.'.docx');
                 }
-                break;
+                //break;
             }       
         return view('exports.rac', ['objects'=> $objects,'date'=>$date_gen, 'softCount'=>$softCountArr]);
     }
