@@ -36,7 +36,7 @@ class ExportsController extends Controller
 
                     //Header
                     $templateProcessor->setValue('computerName', $comp->NAME);
-                    $templateProcessor->setValue('fio', $comp['accountinfo']->fields_5);
+                    $templateProcessor->setValue('fio', htmlspecialchars($comp['accountinfo']->fields_5));
                     
                     //organization
                     $organization[NULL] = "-//-"; 
@@ -65,9 +65,9 @@ class ExportsController extends Controller
                     //Мониторы
                     $i=0;
                     foreach($comp['monitors'] as $monitor){
-                       $monitorManufacturer[$i] = $i.": ".$monitor->MANUFACTURER;
-                       $monitorModel[$i] = $i.": ".$monitor->CAPTION;
-                       $monitorSerial[$i] = ($monitor->SERIAL) ? $i.": ".$monitor->SERIAL : "-//-";
+                       $monitorManufacturer[$i] = $i.": ".htmlspecialchars($monitor->MANUFACTURER);
+                       $monitorModel[$i] = $i.": ".htmlspecialchars($monitor->CAPTION);
+                       $monitorSerial[$i] = ($monitor->SERIAL) ? $i.": ".htmlspecialchars($monitor->SERIAL) : "-//-";
                        $i++;
                     }
                    
@@ -82,9 +82,9 @@ class ExportsController extends Controller
                     }
                    
                     //Системник
-                    $templateProcessor->setValue('computerManufacturer', $comp['bios']['SMANUFACTURER']);
-                    $templateProcessor->setValue('computerModel', $comp['bios']['SMODEL']);
-                    $templateProcessor->setValue('computerSerialNum', $comp['bios']['SSN']);
+                    $templateProcessor->setValue('computerManufacturer', htmlspecialchars($comp['bios']['SMANUFACTURER']));
+                    $templateProcessor->setValue('computerModel', htmlspecialchars($comp['bios']['SMODEL']));
+                    $templateProcessor->setValue('computerSerialNum', htmlspecialchars($comp['bios']['SSN']));
 
                     //APC
                     $apc = Configs::apc($comp['accountinfo']->fields_30)->get();
@@ -99,10 +99,10 @@ class ExportsController extends Controller
 
                     //OS
                     $osEditor =  explode(" ", $comp->OSNAME);
-                    $templateProcessor->setValue('osName', $comp->OSNAME);
-                    $templateProcessor->setValue('osVersion', $comp->OSVERSION);
-                    $templateProcessor->setValue('osEditor', $osEditor[0]);
-                    $templateProcessor->setValue('osLicenseNum', $comp->WINPRODID);
+                    $templateProcessor->setValue('osName', htmlspecialchars($comp->OSNAME));
+                    $templateProcessor->setValue('osVersion', htmlspecialchars($comp->OSVERSION));
+                    $templateProcessor->setValue('osEditor', htmlspecialchars($osEditor[0]));
+                    $templateProcessor->setValue('osLicenseNum', htmlspecialchars($comp->WINPRODID));
 
                     //SOFT
                     $softCount = 0;
