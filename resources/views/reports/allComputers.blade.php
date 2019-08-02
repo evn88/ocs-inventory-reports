@@ -41,7 +41,7 @@
                 </td>    
                 <td>
                     {{$obj->OSNAME}}
-                    <p><small class="text-lowercase text-muted">{{$obj->USERAGENT}}</small></p>
+                    <!--<p><small class="text-lowercase text-muted">{{$obj->USERAGENT}}</small></p>-->
                 </td>
                 <td>{{$obj->PROCESSORT}} <small class="text-muted">{{$obj->PROCESSORS}} GHz</small></td> 
                <td>{{$obj->MEMORY}}</td> 
